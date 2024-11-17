@@ -5,9 +5,18 @@ import typesense from "../lib/typesense";
 import Image from "next/image";
 import Link from "next/link";
 
+interface IGithubUser {
+  avatar_url: string;
+  html_url: string;
+  id: string;
+  login: string;
+}
+
+type StateType = Array<{ document: IGithubUser }>;
+
 export default function Searchbar() {
   const [searchInput, setSearchInput] = useState("");
-  const [results, setResults] = useState<Array<any>>([]);
+  const [results, setResults] = useState<StateType>([]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -29,7 +38,7 @@ export default function Searchbar() {
               abortSignal: abortController.signal,
             }
           );
-        setResults(results.hits ?? []);
+        setResults((results.hits as StateType) ?? []);
       } catch (error) {
         console.error(error);
       }
