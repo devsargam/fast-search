@@ -27,7 +27,7 @@ const TYPESENSE_CONFIG = {
 const typesenseClient = new Typesense.Client(TYPESENSE_CONFIG);
 
 // GitHub API endpoint
-const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/followers`;
+const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/followers?per_page=100`;
 
 async function setupCollection() {
   try {
@@ -58,13 +58,17 @@ async function setupCollection() {
 
 async function fetchFollowers() {
   try {
-    const response = await axios.get(GITHUB_API_URL, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-      },
-    });
+    const followers = [];
+    for (let i = 1; i <= 10; i++) {
+      const response = await axios.get(`${GITHUB_API_URL}&page=${i}`, {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+        },
+      });
 
-    const followers = response.data;
+      followers.push(...response.data);
+    }
+
     console.log(followers);
 
     // Map followers to the Typesense schema
