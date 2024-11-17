@@ -7,7 +7,6 @@ import Link from "next/link";
 
 export default function Searchbar() {
   const [searchInput, setSearchInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -15,7 +14,6 @@ export default function Searchbar() {
 
     const fetchAutocomplete = async (q: string) => {
       try {
-        setLoading(true);
         const results = await typesense()
           .collections("github_followers")
           .documents()
@@ -35,7 +33,6 @@ export default function Searchbar() {
       } catch (error) {
         console.error(error);
       }
-      setLoading(false);
     };
     fetchAutocomplete(searchInput);
 
